@@ -1,6 +1,6 @@
-import 'dart:js_util';
 
 import 'package:flutter/material.dart';
+import 'dart:math' as Math;
 
 void main() {
   runApp(const MyApp());
@@ -33,21 +33,29 @@ class MyHomePage extends StatefulWidget {
 enum CALC_TYPE { add, sub, multi, div }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _setNumber = 0;
-  int _displayNumber = 0;
-  int _firstNum = 0;
+  double _setNumber = 0;
+  double _displayNumber = 0;
+  double _firstNum = 0;
   CALC_TYPE? _calcType;
 
 
-  void _setNum(int num) {
-    _displayNumber = _setNumber;
-    if (100000000 > _displayNumber ) {
+  void _setNum(double num) {
+    if (_displayNumber == _setNumber) {
+      if (100000000 > _displayNumber) {
+        setState(() {
+          _displayNumber = _displayNumber * 10 + num;
+          _setNumber = _displayNumber;
+        });
+      }
+    } else {
       setState(() {
-        _displayNumber = _displayNumber * 10 + num;
+        _displayNumber = num;
         _setNumber = _displayNumber;
+        _calcType = null;
       });
     }
   }
+
 
   void _calcBtnPressed(CALC_TYPE type) {
     _firstNum = _setNumber;
@@ -63,6 +71,36 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _calcSub(){
+    setState(() {
+      _displayNumber = _firstNum - _setNumber;
+      _firstNum = _displayNumber;
+    });
+  }
+
+  void _calcMulti(){
+    setState(() {
+      _displayNumber = _firstNum * _setNumber;
+      _firstNum = _displayNumber;
+    });
+  }
+
+  void _calcDIv(){
+    setState(() {
+      _displayNumber = _firstNum / _setNumber;
+      _firstNum = _displayNumber;
+    });
+  }
+
+  void _checkDecimal(){
+    double checkNum = _displayNumber;
+    int count:
+    for (int i =0; 100000000 < checkNum / Math.pow(10, i); i++) {
+      count = i;
+      checkNum = checkNum / 10;
+    }
+  }
+
   void _clearNum() {
     setState(() {
       _setNumber = 0;
@@ -74,6 +112,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // var digits = _displayNumber.toInt().toString().length;
+    // String displayNum_String = _displayNumber.toStringAsFixed(9-digits);
+
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -85,7 +126,9 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment:CrossAxisAlignment.end,
           children: [
             Text(
-              _displayNumber.toString(),
+              _displayNumber == _displayNumber.toInt()
+                  ? _displayNumber.toInt().toString()
+                  : _displayNumber.toString(),
               style: TextStyle(
                 fontSize: 80,
               ),
@@ -102,7 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
                            onPressed: () {
                              _setNum(7);
                            },
-                           child: Text("7",
+                           child: const Text("7",
                              textAlign: TextAlign.center,
                              style: TextStyle(
                                fontSize: 60,
@@ -138,7 +181,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         Expanded(
                           child: OutlinedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              _calcBtnPressed(CALC_TYPE.div);
+                            },
                           child: Text("÷",
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -194,7 +239,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         Expanded(
                           child: OutlinedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              _calcBtnPressed(CALC_TYPE.multi);
+                            },
                             child: Text("×",
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -250,7 +297,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         Expanded(
                           child: OutlinedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              _calcBtnPressed(CALC_TYPE.sub);
+                            },
                             child: Text("-",
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -296,13 +345,16 @@ class _MyHomePageState extends State<MyHomePage> {
                             onPressed: () {
                               switch (_calcType){
                                 case CALC_TYPE.add:
-                                _calcAdd();
+                                  _calcAdd();
                                   break;
                                 case CALC_TYPE.sub:
+                                  _calcSub();
                                   break;
                                 case CALC_TYPE.multi:
+                                  _calcMulti();
                                   break;
                                 case CALC_TYPE.div:
+                                  _calcDIv();
                                   break;
                                 default:
                                   break;
