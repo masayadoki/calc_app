@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'dart:math' as Math;
 
@@ -23,13 +22,14 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
- const MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
+
 enum CALC_TYPE { add, sub, multi, div }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -37,7 +37,6 @@ class _MyHomePageState extends State<MyHomePage> {
   double _displayNumber = 0;
   double _firstNum = 0;
   CALC_TYPE? _calcType;
-
 
   void _setNum(double num) {
     if (_displayNumber == _setNumber) {
@@ -56,7 +55,6 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-
   void _calcBtnPressed(CALC_TYPE type) {
     _firstNum = _setNumber;
     _setNumber = 0;
@@ -64,40 +62,51 @@ class _MyHomePageState extends State<MyHomePage> {
     _calcType = type;
   }
 
-  void _calcAdd(){
+  void _calcAdd() {
     setState(() {
       _displayNumber = _firstNum + _setNumber;
       _firstNum = _displayNumber;
     });
   }
 
-  void _calcSub(){
+  void _calcSub() {
     setState(() {
       _displayNumber = _firstNum - _setNumber;
       _firstNum = _displayNumber;
     });
   }
 
-  void _calcMulti(){
+  void _calcMulti() {
     setState(() {
       _displayNumber = _firstNum * _setNumber;
       _firstNum = _displayNumber;
     });
   }
 
-  void _calcDIv(){
+  void _calcDIv() {
     setState(() {
       _displayNumber = _firstNum / _setNumber;
       _firstNum = _displayNumber;
+      _checkDecimal(); // 小数点以下の桁数をチェックする
     });
   }
 
-  void _checkDecimal(){
+  void _checkDecimal() {
     double checkNum = _displayNumber;
-    int count:
-    for (int i =0; 100000000 < checkNum / Math.pow(10, i); i++) {
-      count = i;
-      checkNum = checkNum / 10;
+    int convert_flag = 0;
+
+    if (checkNum != checkNum.toInt()) {
+      convert_flag = 1;
+      double decimal_portion = checkNum - checkNum.truncate();
+      int integer_part = checkNum.truncate().toString().length;
+      double converted_decimal_portion =
+          double.parse(decimal_portion.toStringAsFixed(9 - integer_part));
+
+      print(integer_part);
+      print(converted_decimal_portion);
+      setState(() {
+        _displayNumber = checkNum.truncate() + converted_decimal_portion;
+      });
     }
   }
 
@@ -123,7 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Container(
         child: Column(
-          crossAxisAlignment:CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
               _displayNumber == _displayNumber.toInt()
@@ -137,253 +146,269 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Container(
                 child: Column(
                   children: [
-                   Expanded(
-                     child: Row(
-                      children: [
-                        Expanded(
-                         child: OutlinedButton(
-                           onPressed: () {
-                             _setNum(7);
-                           },
-                           child: const Text("7",
-                             textAlign: TextAlign.center,
-                             style: TextStyle(
-                               fontSize: 60,
-                             ),
-                           ),
-                          ),
-                        ),
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () {
-                              _setNum(8);
-                            },
-                          child: Text("8",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 60,
-                            ),
-                          ),
-                          ),
-                        ),
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () {
-                              _setNum(9);
-                            },
-                          child: Text("9",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 60,
-                            ),
-                          ),
-                          ),
-                        ),
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () {
-                              _calcBtnPressed(CALC_TYPE.div);
-                            },
-                          child: Text("÷",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 60,
-                              ),
-                            ),
-                           ),
-                         ),
-                       ],
-                     ),
-                   ),
-                   Expanded(
-                     child: Row(
-                      children: [
-                        Expanded(
-                         child: OutlinedButton(
-                         onPressed: () {
-                           _setNum(4);
-                         },
-                          child: Text("4",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 60,
-                            ),
-                          ),
-                         ),
-                        ),
-                        Expanded(
-                         child: OutlinedButton(
-                         onPressed: () {
-                           _setNum(5);
-                         },
-                          child: Text("5",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 60,
-                            ),
-                          ),
-                         ),
-                        ),
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () {
-                              _setNum(6);
-                            },
-                            child: Text("6",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 60,
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () {
+                                _setNum(7);
+                              },
+                              child: const Text(
+                                "7",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 60,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () {
-                              _calcBtnPressed(CALC_TYPE.multi);
-                            },
-                            child: Text("×",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 60,
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () {
+                                _setNum(8);
+                              },
+                              child: Text(
+                                "8",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 60,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                     ),
-                   ),
-                   Expanded(
-                     child: Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () {
-                              _setNum(1);
-                            },
-                            child: Text("1",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 60,
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () {
+                                _setNum(9);
+                              },
+                              child: Text(
+                                "9",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 60,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () {
-                              _setNum(2);
-                            },
-                            child: Text("2",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 60,
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () {
+                                _calcBtnPressed(CALC_TYPE.div);
+                              },
+                              child: Text(
+                                "÷",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 60,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () {
-                              _setNum(3);
-                            },
-                            child: Text("3",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 60,
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () {
+                                _setNum(4);
+                              },
+                              child: Text(
+                                "4",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 60,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () {
-                              _calcBtnPressed(CALC_TYPE.sub);
-                            },
-                            child: Text("-",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 60,
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () {
+                                _setNum(5);
+                              },
+                              child: Text(
+                                "5",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 60,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                     ),
-                   ),
-                   Expanded(
-                     child: Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () {
-                              _clearNum();
-                            },
-                            child: Text("C",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 60,
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () {
+                                _setNum(6);
+                              },
+                              child: Text(
+                                "6",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 60,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () {
-                              _setNum(0);
-                            },
-                            child: Text("0",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 60,
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () {
+                                _calcBtnPressed(CALC_TYPE.multi);
+                              },
+                              child: Text(
+                                "×",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 60,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () {
-                              switch (_calcType){
-                                case CALC_TYPE.add:
-                                  _calcAdd();
-                                  break;
-                                case CALC_TYPE.sub:
-                                  _calcSub();
-                                  break;
-                                case CALC_TYPE.multi:
-                                  _calcMulti();
-                                  break;
-                                case CALC_TYPE.div:
-                                  _calcDIv();
-                                  break;
-                                default:
-                                  break;
-                             }
-                            },
-                            child: Text("=",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 60,
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () {
+                                _setNum(1);
+                              },
+                              child: Text(
+                                "1",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 60,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () {
-                             _calcBtnPressed(CALC_TYPE.add);
-                            },
-                            child: Text("+",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 60,
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () {
+                                _setNum(2);
+                              },
+                              child: Text(
+                                "2",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 60,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                     ),
-                   ),
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () {
+                                _setNum(3);
+                              },
+                              child: Text(
+                                "3",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 60,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () {
+                                _calcBtnPressed(CALC_TYPE.sub);
+                              },
+                              child: Text(
+                                "-",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 60,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () {
+                                _clearNum();
+                              },
+                              child: Text(
+                                "C",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 60,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () {
+                                _setNum(0);
+                              },
+                              child: Text(
+                                "0",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 60,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () {
+                                switch (_calcType) {
+                                  case CALC_TYPE.add:
+                                    _calcAdd();
+                                    break;
+                                  case CALC_TYPE.sub:
+                                    _calcSub();
+                                    break;
+                                  case CALC_TYPE.multi:
+                                    _calcMulti();
+                                    break;
+                                  case CALC_TYPE.div:
+                                    _calcDIv();
+                                    break;
+                                  default:
+                                    break;
+                                }
+                              },
+                              child: Text(
+                                "=",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 60,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () {
+                                _calcBtnPressed(CALC_TYPE.add);
+                              },
+                              child: Text(
+                                "+",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 60,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
