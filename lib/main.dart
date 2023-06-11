@@ -95,6 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
     double checkNum = _displayNumber;
     int convert_flag = 0;
 
+    print('test');
     if (checkNum != checkNum.toInt()) {
       convert_flag = 1;
       double decimal_portion = checkNum - checkNum.truncate();
